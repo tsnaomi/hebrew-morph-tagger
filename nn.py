@@ -31,13 +31,11 @@ MODEL_FN = op.join(MODELS_DIR, 'morph_tagger')
 
 data = Data()  # load data!
 
-# create POS datasets
-pos_train_Y = data.train_Y[:, :, :data.label_indices['pos'][-1]]
-pos_dev_Y = data.dev_Y[:, :, :data.label_indices['pos'][-1]]
-
 
 # parameters ------------------------------------------------------------------
 
+# for now, I am hard-coding arbitrary values for different parameters required
+# by the network
 WORD_EMBEDDING_DIM = 150
 CHAR_EMBEDDING_DIM = 200
 CHAR_LSTM_DIM = 100
@@ -233,7 +231,7 @@ if __name__ == '__main__':
 
     # morphological tagger
     model = MorphTagger(
-        model_fn=MODEL_FN + 'NewTest-2',
+        model_fn=MODEL_FN,
         train_X=data.train_X,
         train_Y=data.train_Y,
         )
