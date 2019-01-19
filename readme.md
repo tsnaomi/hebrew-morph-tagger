@@ -44,11 +44,11 @@ The final layer of the network is a time-distributed `keras.layers.Dense` layer.
 
 Since the labels in the output vector are *not* mutually exclusive, it is less appropriate to use *softmax* in the final layer, as *softmax* pits labels against one another for probability mass. Instead, I use the *sigmoid* activation function, which computes a value for each cell in the output vector independently of all the other cells in the vector:
 
-$$\text{Sigmoid activation function:}\quad f(x) = \dfrac{1}{1 + e^{-x}}$$
+<img src="./images/sigmoid-activation.png" alt="sigmoid activation function" style="width: 300px;">
 
 Likewise, during training, the model uses *binary cross entropy* as its loss function to prevent the assignment of one label from influencing the assignment of other labels. *Binary cross entropy* assumes each label has a binary distribution {*p*, 1-*p*}; therefore, it calculates the error for each label independently of the next, then sums over the results. Below, *y<sub>i</sub>* is the correct value for label *i* and *y<sub>i</sub>*-hat is the predicted value for that label.
 
-$$\text{CE}_{\text{binary}} = -\sum_i \big( y_i \log(\hat{y}_i) + (1 - y_i)\log(1-\hat{y}_i)\big)$$
+<img src="./images/binary-cross-entropy.png" alt="binary cross entropy loss function" style="width: 320px;">
 
 ### The data
 
