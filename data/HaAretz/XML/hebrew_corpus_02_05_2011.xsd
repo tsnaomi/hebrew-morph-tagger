@@ -1,0 +1,1102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="he">
+		הגדרה של קורפוס בעברית המתוייג מורפו-סינטקטית.
+
+		גרסה: $Revision: 1.6 $
+		תאריך עדכון אחרון: $Date: 19.12.2011 $.
+
+		הקורפוס נועד לייצג טקסטים בעברית אשר מחולקים למאמרים, פסקות, משפטים ומילים, כאשר כל מילה ומילה יכולה לקבל ניתוחים מורפו-סינטקטיים.
+
+		מסמך זה אמור להיות ברור ועצמאי, אולם, ייתכן שבעתיד יתווספו הפניות למקורות מידע נוספים.
+
+		 נא לשלוח הערות, שאלות ובקשות לדליה בוז'ן
+		 daliabo@cs.technion.ac.il
+		 mila@cs.technion.ac.il
+
+		להלן התנאים לשימוש במסמך זה, להלן, הרשיון:
+			Copyright (C) 2010 Mila Knowledge center.
+
+			It is released to the public licensed under the GNU General Public License
+			(GPL). See the COPYING file included in this distribution for the whole text
+			of the GNU General Public License version 2.
+
+			There is no warranty of any kind for the contents of this distribution.
+
+		נותר לבצע:
+		==========
+		יש לאכוף אילוצים רבים אשר אינם באים לידי אכיפה או אפילו לידי ביטוי בסכימה זו. ההצעה שלי היא לנסח סכימת RELAXNG אשר תדאג לאכיפת האילוצים, ואז כל מערכת אשר תעשה שימוש בהגדרות אלה, תצטרך בעצם לבצע ולידציה מול שני סוגי הסכימות.
+		</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="corpus" type="CorpusType"/>
+	<xsd:complexType name="CorpusType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			קורפוס משמש כשורש המסמך. הוא מכיל מידע על הקורפוס וכן אוסף מאמרים.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="metadata" type="MetadataType" minOccurs="0"/>
+			<xsd:element name="article" type="ArticleType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:token" use="optional"/>
+		<xsd:attribute name="version" type="xsd:float" use="optional"/>
+		<xsd:attribute name="maintainer" type="xsd:token" use="optional"/>
+		<xsd:attribute name="email" type="xsd:token" use="optional"/>
+		<xsd:attribute name="comment" type="xsd:token" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="MetadataType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			שם הקורפוס, גרסה, גרסה פנימית, תאריך עדכון אחרון, שם מתחזק המסמך, דוא"ל של מתחזק המסמך, רשימת מקורות, רשיון שימוש, מיפוי מחרוזות לתעתיק לועזי.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:token"/>
+			<xsd:element name="version" type="xsd:float"/>
+			<xsd:element name="revision" type="xsd:token"/>
+			<xsd:element name="date" type="xsd:token"/>
+			<xsd:element name="maintainer" type="xsd:token"/>
+			<xsd:element name="email" type="xsd:token"/>
+			<xsd:element name="source" type="SourceType" maxOccurs="unbounded"/>
+			<xsd:element name="license" type="xsd:string"/>
+			<xsd:element name="transliteration" type="TransliterationType"/>
+			<xsd:element name="comment" type="xsd:token" minOccurs="0"/>
+			<!-- טקסט חפשי המשמש לצרכי הערות -->
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="SourceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה המתאר מקור ממנו התקבלו הטקסטים לקורפוס.  שם המקור, גרסה של המקור, הפנייה (למשל קישור).
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:token" use="required"/>
+		<xsd:attribute name="version" type="xsd:token" use="optional"/>
+		<xsd:attribute name="url" type="xsd:token" use="optional"/>
+		<!-- שם    -->
+		<!-- גרסה  -->
+		<!-- קישור -->
+	</xsd:complexType>
+	<xsd:complexType name="TransliterationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה המתאר מיפוי בין מחרוזות בעברית למחרוזות בתעתיק לטיני. בפרט, מתואר מיפוי אותיות.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="string" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="hebrew" type="xsd:string" use="required"/>
+					<xsd:attribute name="latin" type="xsd:string" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="from" type="xsd:language" use="required"/>
+		<xsd:attribute name="to" type="xsd:language" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="ArticleType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			כל מאמר מורכב מאוסף של פסקות.
+			מזהה (id) הוא בעל משמעות בתוך המסמך עצמו ולצרכי הצבעה על עליו ועל חלקיו.
+			ההצבעה היא בעלת משמעות כאשר היא משולבת גם בנתוני המידע של הקורפוס מתוך ה-metadata.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="paragraph" type="ParagraphType" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation xml:lang="he">
+					מאמר, כאמור, מורכב מאוסף פסקות.
+					בפרט, כותרות ותת כותרות ייוצגו גם הן ע"י פסקות, בהעדר תיוג מיוחד עבורן.
+					</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<xsd:attribute name="takenFrom" type="xsd:token" use="optional"/>
+		<!-- מזהה למאמר בקורפוס הנתון -->
+		<!-- טקסט או מראה מקום המתאר את מקור המאמר -->
+	</xsd:complexType>
+	<xsd:complexType name="ParagraphType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			פסקה מורכבת מאוסף משפטים.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="sentence" type="SentenceType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<xsd:attribute name="takenFrom" type="xsd:token" use="optional"/>
+		<!-- מזהה לפסקה במאמר נתון -->
+		<!-- טקסט או מראה מקום המתאר את מקור הפסקה -->
+	</xsd:complexType>
+	<xsd:complexType name="SentenceType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			משפט מורכב מאוסף תמניות (מילים).
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="token" type="TokenType" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<xsd:attribute name="takenFrom" type="xsd:token" use="optional"/>
+		<!-- מזהה למשפט בפסקה נתונה-->
+		<!-- טקסט או מראה מקום המתאר את מקור המשפט -->
+	</xsd:complexType>
+	<xsd:complexType name="TokenType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			תמנית מציגה את המילה על פני השטח בעברית ובתעתיק לטיני וכן, עשויה להכיל ניתוחים מורפו-סינטקטיים של המילה על פני השטח.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="analysis" type="AnalysisType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="surface" type="xsd:token" use="required"/>
+		<xsd:attribute name="transliterated" type="xsd:token" use="optional"/>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<!-- תאור בעבית של הצורה על פני השטח -->
+		<!-- תאור בתעתיק לטיני של הצורה על פני השטח -->
+		<!-- מזהה לתמנית במשפט הנתון -->
+	</xsd:complexType>
+	<xsd:complexType name="AnalysisType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			ניתוח מכיל בסיס וייתכן שגם תחיליות וסופיות
+			</xsd:documentation>
+			<xsd:appinfo>
+				<!-- this is for applying restrictions on selected values -->
+				<allow element="prefix" attribute="surface" value="ב">
+					<onlyWith element="prefix" attribute="function" value="preposition"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="כ">
+					<onlyWith element="prefix" attribute="function" value="preposition"/>
+					<onlyWith element="prefix" attribute="function" value="adverb"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="ל">
+					<onlyWith element="prefix" attribute="function" value="preposition"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="מ">
+					<onlyWith element="prefix" attribute="function" value="preposition"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="ה">
+					<onlyWith element="prefix" attribute="function" value="definiteArticle"/>
+					<onlyWith element="prefix" attribute="function" value="relativizer"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="ו">
+					<onlyWith element="prefix" attribute="function" value="conjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="כש">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="מש">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="לכש">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="מב">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="מל">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="ש">
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+					<onlyWith element="prefix" attribute="function" value="relativizer"/>
+				</allow>
+				<allow element="prefix" attribute="surface" value="בש">
+					<onlyWith element="prefix" attribute="function" value="preposition"/>
+					<onlyWith element="prefix" attribute="function" value="subordinatingConjunction"/>
+				</allow>
+				<allow element="prefix" attribute="function" value="unspecified">
+					<onlyWith element="prefix" attribute="surface" value="מ"/>
+					<onlyWith element="prefix" attribute="surface" value="ש"/>
+					<onlyWith element="prefix" attribute="surface" value="ה"/>
+					<onlyWith element="prefix" attribute="surface" value="ו"/>
+					<onlyWith element="prefix" attribute="surface" value="כ"/>
+					<onlyWith element="prefix" attribute="surface" value="ל"/>
+					<onlyWith element="prefix" attribute="surface" value="ב"/>
+					<onlyWith element="prefix" attribute="surface" value="כש"/>
+					<onlyWith element="prefix" attribute="surface" value="מש"/>
+					<onlyWith element="prefix" attribute="surface" value="מב"/>
+					<onlyWith element="prefix" attribute="surface" value="מל"/>
+					<onlyWith element="prefix" attribute="surface" value="בש"/>
+					<onlyWith element="prefix" attribute="surface" value="לכש"/>
+					<onlyWith element="prefix" attribute="surface" value="unspecified"/>
+				</allow>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="prefix" type="PrefixType" minOccurs="0" maxOccurs="6"/>
+			<!-- תחילית -->
+			<xsd:element name="base" type="BaseType" minOccurs="0"/>
+			<!-- בסיס   -->
+			<xsd:element name="suffix" type="SuffixType" minOccurs="0"/>
+			<!-- סופית  -->
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<xsd:attribute name="guess" type="xsd:boolean" use="optional" default="false"/>
+		<xsd:attribute name="score" type="xsd:double" use="optional" default="0"/>
+		<xsd:attribute name="cont" type="xsd:boolean" use="optional" default="false"/>
+		<!-- מזהה לניתוח עבור תמנית נתונה -->
+		<!-- האם ניתוח זה מהווה  ניחוש? -->
+		<!-- משמש לדירוד ניתוחים לצורכי הפגת עמימות -->
+	</xsd:complexType>
+	<xsd:complexType name="PrefixType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			לדיון בצירופים אפשריים של מילות השימוש הזעירות ראה דיון: http://cs.haifa.ac.il/~shlomo/hebrew/prefixal_particles.html
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="surface" type="PrefixSurfaceType" use="optional"/>
+		<xsd:attribute name="transliterated" type="PrefixTransliteratedType" use="optional"/>
+		<xsd:attribute name="function" type="PrefixFunctionType" use="optional"/>
+		<xsd:attribute name="id" type="xsd:token" use="required"/>
+		<xsd:attribute name="multiWord" type="xsd:boolean" use="optional" default="false"/>
+		<!-- תעתיק לטיני מדוייק של surface -->
+		<!-- מזהה לניתוח עבור תמנית נתונה -->
+	</xsd:complexType>
+	<xsd:simpleType name="PrefixSurfaceType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="מ"/>
+			<xsd:enumeration value="ש"/>
+			<xsd:enumeration value="ה"/>
+			<xsd:enumeration value="ו"/>
+			<xsd:enumeration value="כ"/>
+			<xsd:enumeration value="ל"/>
+			<xsd:enumeration value="ב"/>
+			<xsd:enumeration value="כש"/>
+			<xsd:enumeration value="מש"/>
+			<xsd:enumeration value="מב"/>
+			<xsd:enumeration value="מל"/>
+			<xsd:enumeration value="בש"/>
+			<xsd:enumeration value="לכש"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PrefixTransliteratedType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="m"/>
+			<xsd:enumeration value="e"/>
+			<xsd:enumeration value="h"/>
+			<xsd:enumeration value="w"/>
+			<xsd:enumeration value="k"/>
+			<xsd:enumeration value="l"/>
+			<xsd:enumeration value="b"/>
+			<xsd:enumeration value="ke"/>
+			<xsd:enumeration value="me"/>
+			<xsd:enumeration value="mb"/>
+			<xsd:enumeration value="ml"/>
+			<xsd:enumeration value="be"/>
+			<xsd:enumeration value="lke"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PrefixFunctionType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="relativizer"/>
+			<xsd:enumeration value="conjunction"/>
+			<xsd:enumeration value="definiteArticle"/>
+			<xsd:enumeration value="subordinatingConjunction"/>
+			<xsd:enumeration value="relativizer/subordinatingConjunction"/>
+			<xsd:enumeration value="temporalSubConj"/>
+			<xsd:enumeration value="interrogative"/>
+			<xsd:enumeration value="tenseInversion"/>
+			<xsd:enumeration value="preposition"/>
+			<xsd:enumeration value="adverb"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- מילית זיקה   -->
+			<!-- מילית חיבור  -->
+			<!-- תווית מיידעת -->
+			<!-- מילית שעבוד  -->
+			<!-- מילית זיקה או שעבוד  -->
+			<!-- מילית שעבוד זמן -->
+			<!-- מילית שאלה   -->
+			<!-- היפוך זמן    -->
+			<!-- מילית יחס    -->
+			<!-- תואר הפועל   -->
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="BaseType">
+		<xsd:choice>
+			<xsd:element name="adjective" type="GenderNumberStatusDefinitenessType"/>
+			<!-- שם תואר     -->
+			<xsd:element name="adverb" type="GenderNumberPersonType"/>
+			<!-- תואר הפועל  -->
+			<xsd:element name="zevel" type="ZVLType"/>
+			<!-- כתובות אינטרנט  -->
+			<xsd:element name="conjunction" type="ConjunctionType"/>
+			<!-- מילת חיבור  -->
+			<xsd:element name="interjection" type="InterjectionType"/>
+			<!-- מילת קריאה -->
+			<xsd:element name="interrogative" type="InterrogativeType"/>
+			<!-- מילת שאלה   -->
+			<xsd:element name="negation" type="NegationType"/>
+			<!-- מילת שלילה  -->
+			<xsd:element name="foreign" type="ForeignType"/>
+			<!-- מילות זרות  -->
+			<xsd:element name="url" type="URLType"/>
+			<!-- כתובות אינטרנט  -->
+			<xsd:element name="noun" type="GenderNumberStatusDefinitenessType"/>
+			<!-- שם עצם      -->
+			<xsd:element name="preposition" type="GenderNumberPersonType"/>
+			<!-- מילת יחס    -->
+			<xsd:element name="pronoun" type="PronounType"/>
+			<!-- כינוי גוף   -->
+			<xsd:element name="properName" type="ProperNameType"/>
+			<!-- שם פרטי     -->
+			<xsd:element name="punctuation" type="PunctuationType"/>
+			<!-- סימני פיסוק -->
+			<xsd:element name="numberExpression" type="NumberExpressionType"/>
+			<!-- תאריך/זמן -->
+			<xsd:element name="quantifier" type="QuantifierType"/>
+			<!-- כמת        -->
+			<xsd:element name="verb" type="VerbType"/>
+			<!-- פועל        -->
+			<xsd:element name="participle" type="ParticipleType"/>
+			<!-- בינוני  -->
+			<xsd:element name="numeral" type="NumeralType"/>
+			<!-- שם מספר     -->
+			<xsd:element name="existential" type="ExistentialType"/>
+			<!-- כמת ישיי     -->
+			<xsd:element name="impersonal" type="ImpersonalType"/>
+			<!-- חסרי משקל     -->
+			<xsd:element name="wPrefix" type="WprefixType"/>
+			<!-- תחיליות     -->
+			<xsd:element name="modal" type="ModalType"/>
+			<!-- מודאל     -->
+			<xsd:element name="copula" type="CopulaType"/>
+			<!-- מודאל     -->
+			<xsd:element name="title" type="TitleType"/>
+			<!-- תואר     -->
+			<xsd:element name="MWE" type="MWEType"/>
+			<!-- תואר     -->
+			<xsd:element name="unknown" type="UnknownType"/>
+			<!-- כתובות אינטרנט  -->
+		</xsd:choice>
+		<xsd:attribute name="lexiconItem" type="xsd:token" use="optional">
+			<xsd:annotation>
+				<xsd:documentation xml:lang="he">
+				ערך מילוני של המילה המנותחת בכתיב מלא חסר ניקוד ע"פ כללי האקדמיה ללשון עברית.
+				אין חובה למלא ערך זה עבור צורות שלהן אין ערך מילוני, כגון סימני פיסוק.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="transliteratedLexiconItem" type="xsd:token" use="optional">
+			<xsd:annotation>
+				<xsd:documentation xml:lang="he">
+				משמש לאותה מטרה כמו lexiconItem אבל מכיל את אותו המידע בתעתיק הלטיני.
+				אין חובה למלא ערך זה עבור צורות שלהן אין ערך מילוני, כגון סימני פיסוק.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="dottedLexiconItem" type="xsd:token" use="optional">
+			<xsd:annotation>
+				<xsd:documentation xml:lang="he">
+				ערך מילוני של המילה המנותחת בכתיב מנוקד.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="lexiconPointer" type="xsd:token" use="optional">
+			<xsd:annotation>
+				<xsd:documentation xml:lang="he">
+				מצביע למזהה בלקסיקון, לצורך הצבעה על הערך המילוני הרצוי. המזהה מתייחס לסרסה מסויימת מתאריך מסויים של הלקסיקון.
+				</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:simpleType name="TriStateType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- כן -->
+			<!-- לא -->
+			<!-- לא ידוע / לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="GenderNumberStatusType">
+		<xsd:attribute name="gender" type="GenderType" default="masculine"/>
+		<xsd:attribute name="number" type="NumberType" default="singular"/>
+		<xsd:attribute name="status" type="StatusType" default="absolute and construct"/>
+		<!-- מין    -->
+		<!-- מספר   -->
+		<!-- סמיכות -->
+	</xsd:complexType>
+	<xsd:complexType name="GenderNumberStatusDefinitenessType">
+		<xsd:attribute name="gender" type="GenderType" default="masculine"/>
+		<xsd:attribute name="number" type="NumberType" default="singular"/>
+		<xsd:attribute name="status" type="StatusType" default="unspecified"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="unspecified"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="function" type="xsd:token" use="optional" default="adjective"/>
+		<xsd:attribute name="foreign" type="TriStateType" use="optional" default="false"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין    -->
+		<!-- מספר   -->
+		<!-- סמיכות -->
+		<!-- יידוע -->
+		<!-- עבור ראשי תיבות - משמעות-->
+		<!-- האם מילה לועזית-->
+		<!-- ז'אנר-->
+	</xsd:complexType>
+	<xsd:simpleType name="GenderType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר את הערכים האפשריים לתכונת המין.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="masculine"/>
+			<xsd:enumeration value="feminine"/>
+			<xsd:enumeration value="masculine and feminine"/>
+			<xsd:enumeration value="unspecified"/>
+			<xsd:enumeration value="irrelevant"/>
+			<!-- זכר             -->
+			<!-- נקבה            -->
+			<!-- גם זכר וגם נקבה -->
+			<!-- לא ידוע         -->
+			<!-- לר רלוונטי      -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="DefinitenessType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="true"/>
+			<xsd:enumeration value="false"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NumberType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר את הערכים האפשריים לתכונת המספר.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="singular"/>
+			<xsd:enumeration value="plural"/>
+			<xsd:enumeration value="dual"/>
+			<xsd:enumeration value="dual and plural"/>
+			<xsd:enumeration value="singular and plural"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- יחיד               -->
+			<!-- רבים               -->
+			<!-- זוגי               -->
+			<!-- גם זוגי וגם רבים   -->
+			<!-- גם יחיד וגם רבים   -->
+			<!-- לא ידוע / לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="StatusType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר מצב הסמיכות: האם המילה בנטיית סמיכות, או שלא...
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="absolute"/>
+			<xsd:enumeration value="construct"/>
+			<xsd:enumeration value="absolute and construct"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- נפרד               -->
+			<!-- נסמך               -->
+			<!-- גם נפרד וגם נסמך   -->
+			<!-- לא ידוע / לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="RegisterType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="formal"/>
+			<xsd:enumeration value="archaic"/>
+			<xsd:enumeration value="informal"/>
+			<!-- פורמאלי                  -->
+			<!-- ארכאי     -->
+			<!-- מדוברת    -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SpellingType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="standard"/>
+			<xsd:enumeration value="irregular"/>
+			<!-- פורמאלי                -->
+			<!-- כתיב לא תקין                                          -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="VerbType">
+		<xsd:attribute name="tense" type="TenseType" use="optional" default="unspecified"/>
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="root" type="xsd:token" use="optional"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="binyan" type="BinyanType" use="optional" default="unspecified"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- ענת  -->
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- גוף  -->
+		<!-- שורש                 -->
+		<!-- בניין                -->
+		<!-- ז'אנר                -->
+	</xsd:complexType>
+	<xsd:simpleType name="BinyanType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="Pa'al"/>
+			<xsd:enumeration value="Nif'al"/>
+			<xsd:enumeration value="Pi'el"/>
+			<xsd:enumeration value="Pu'al"/>
+			<xsd:enumeration value="Hif'il"/>
+			<xsd:enumeration value="Huf'al"/>
+			<xsd:enumeration value="Hitpa'el"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- בניין פעל   -->
+			<!-- בניין נפעל  -->
+			<!-- בניין פיעל  -->
+			<!-- בניין פועל  -->
+			<!-- בניין הפעיל -->
+			<!-- בניין הופעל -->
+			<!-- בניין התפעל -->
+			<!-- לא ידוע -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="TenseType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="past"/>
+			<xsd:enumeration value="present"/>
+			<xsd:enumeration value="beinoni"/>
+			<xsd:enumeration value="future"/>
+			<xsd:enumeration value="imperative"/>
+			<xsd:enumeration value="infinitive"/>
+			<xsd:enumeration value="bareInfinitive"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- עבר     -->
+			<!-- הווה (להבדיל מבינוני שיכול להיות גם שם-עצם) -->
+			<!-- בינוני  -->
+			<!-- עתיד    -->
+			<!-- ציווי   -->
+			<!-- שם פועל -->
+			<!-- מקור    -->
+			<!-- לא ידוע / לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PersonType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="1"/>
+			<xsd:enumeration value="2"/>
+			<xsd:enumeration value="3"/>
+			<xsd:enumeration value="any"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- גוף ראשון -->
+			<!-- גוף שני   -->
+			<!-- גוף שלישי -->
+			<!-- כל אחד מהגופים -->
+			<!-- לא ידוע / לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="ProperNameType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="masculine"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="singular"/>
+		<xsd:attribute name="type" type="NamedEntityType" use="optional" default="unspecified"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- סוג  -->
+		<!-- ה הידיעה-->
+		<!-- עבור ראשי תיבות פירוט-->
+		<!-- כתיב-->
+	</xsd:complexType>
+	<xsd:simpleType name="NumeralTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="numeral ordinal"/>
+			<xsd:enumeration value="numeral cardinal"/>
+			<xsd:enumeration value="numeral fractional"/>
+			<xsd:enumeration value="literal number"/>
+			<xsd:enumeration value="gematria"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="NamedEntityType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="person"/>
+			<xsd:enumeration value="location"/>
+			<xsd:enumeration value="organization"/>
+			<xsd:enumeration value="product"/>
+			<xsd:enumeration value="dateTime"/>
+			<xsd:enumeration value="country"/>
+			<xsd:enumeration value="town"/>
+			<xsd:enumeration value="language"/>
+			<xsd:enumeration value="symbol"/>
+      <xsd:enumeration value="art"/>
+			<xsd:enumeration value="other"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- שם של אדם               -->
+			<!-- שם של מקום              -->
+			<!-- שם של ארגון             -->
+			<!-- שם של מוצר              -->
+			<!-- תאריך                   -->
+			<!-- שם של ארץ    -->
+			<!-- שפה    -->
+			<!-- אותיות ותוים   -->
+			<!-- אף אחד מהאפשרויות שלעיל -->
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="PronounType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="type" type="PronounTypeType" use="optional" default="unspecified"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- גוף  -->
+		<!-- סוג -->
+		<!-- יידוע -->
+		<!-- ז'אנר-->
+	</xsd:complexType>
+	<xsd:simpleType name="PronounTypeType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+מבנה זה מתאר סוגים שונים של כינוי גוף (שם גוף).
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="interrogative"/>
+			<xsd:enumeration value="personal"/>
+			<xsd:enumeration value="demonstrative"/>
+			<xsd:enumeration value="impersonal"/>
+			<xsd:enumeration value="relativizer"/>
+			<xsd:enumeration value="reflexive"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- כינוי גוף: כינוי נושא  -->
+			<!-- גינוי גוף: כינוי רומז  -->
+			<!-- גינוי גוף: כינוי זיקה  -->
+			<!-- גינוי גוף: כינוי סתמי  -->
+			<!-- לא מוגדר -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="GenderNumberPersonType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+	</xsd:complexType>
+	<xsd:complexType name="InterrogativeType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="type" type="InterrogativeTypeType" default="unspecified"/>
+	</xsd:complexType>
+	<xsd:simpleType name="InterrogativeTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="pronoun"/>
+			<xsd:enumeration value="proadverb"/>
+			<xsd:enumeration value="prodet"/>
+			<xsd:enumeration value="yesno"/>
+			<xsd:enumeration value="unspecified"/>
+			<!--מילת גוף-->
+			<!-- תואר הפועל -->
+			<!-- מצביע-->
+			<!-- שאלת כן לא-->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="InterjectionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			המבנה מתאר מילות קריאה.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+	</xsd:complexType>
+	<xsd:complexType name="ConjunctionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר מילות חיבור.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="type" type="ConjunctionTypeType" use="optional" default="coordinating"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+	</xsd:complexType>
+	<xsd:simpleType name="ConjunctionTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="coordinating"/>
+			<xsd:enumeration value="subordinating"/>
+			<xsd:enumeration value="relativizing"/>
+			<!-- מילת קישור -->
+			<!-- מילת שעבוד -->
+			<!-- מילת זיקה  -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="NegationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר מילות שלילה.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+	</xsd:complexType>
+	<xsd:complexType name="ImpersonalType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר חסרי משקל וגוף.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+	</xsd:complexType>
+	<xsd:complexType name="WprefixType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר תחיליות
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="polarity" type="PolarityType" use="optional" default="unspecified"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+	</xsd:complexType>
+	<xsd:complexType name="ForeignType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר מילים זרות.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="URLType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר כתובת דואר אלקטרוני וכתובת אינטרנט
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="ZVLType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+		זבל
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="UnknownType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר את כל המקרים בהם לא ניתן ניתוח מתוך הלקסיקון
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+	</xsd:complexType>
+	<xsd:complexType name="ParticipleType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="root" type="xsd:token" use="optional"/>
+		<xsd:attribute name="binyan" type="BinyanType" use="optional" default="unspecified"/>
+		<xsd:attribute name="status" type="StatusType" default="absolute and construct"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="subcoordinating" type="xsd:token" use="optional" default="false"/>
+		<xsd:attribute name="mood" type="xsd:token" use="optional"/>
+		<xsd:attribute name="type" type="ParticiplePosType" default="verb"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- גוף  -->
+		<!-- שורש                 -->
+		<!-- בניין                -->
+		<!-- נסמך                -->
+		<!-- ה הידיעה                -->
+		<!-- לציון צורת פעול-->
+		<!--  בחירת התיוג מתוך בינוני, שם עצם ושם תואר -->
+		<!-- ז'אנר-->
+	</xsd:complexType>
+	<xsd:complexType name="NumberExpressionType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מייצג תאריך/שעה
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="type" type="NumberExpressionTypeType" use="optional" default="unspecified"/>
+	</xsd:complexType>
+	<xsd:simpleType name="NumberExpressionTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="date"/>
+			<xsd:enumeration value="time"/>
+			<xsd:enumeration value="gameScore"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+		<!-- ביטוי מספרי-->
+	</xsd:simpleType>
+	<xsd:complexType name="PunctuationType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+			מבנה זה מתאר סימני פיסוק או סימנים אחרים שאינם מתאימים לחלקי הדיבר שמפורטים לעיל
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="type" type="PunctuationTypeType" use="optional" default="unspecified"/>
+	</xsd:complexType>
+	<xsd:simpleType name="PunctuationTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="letter"/>
+			<xsd:enumeration value="dash"/>
+			<xsd:enumeration value="diacritic"/>
+			<xsd:enumeration value="apostrophe"/>
+			<xsd:enumeration value="whitespace"/>
+			<xsd:enumeration value="bullet"/>
+			<xsd:enumeration value="connector"/>
+			<xsd:enumeration value="open"/>
+			<xsd:enumeration value="close"/>
+			<xsd:enumeration value="symbol"/>
+			<xsd:enumeration value="mathSymbol"/>
+			<xsd:enumeration value="currencySymbol"/>
+			<xsd:enumeration value="Separator"/>
+			<xsd:enumeration value="lineSeparator"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="SuffixType">
+		<xsd:attribute name="surface" type="SuffixSurfaceType" use="optional" default="unspecified"/>
+		<xsd:attribute name="transliterated" type="SuffixTransliteratedSurfaceType" use="optional" default="unspecified"/>
+		<xsd:attribute name="function" type="SuffixFunctionType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+	</xsd:complexType>
+	<xsd:simpleType name="SuffixSurfaceType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="י"/>
+			<xsd:enumeration value="ך"/>
+			<xsd:enumeration value="ו"/>
+			<xsd:enumeration value="ה"/>
+			<xsd:enumeration value="נו"/>
+			<xsd:enumeration value="כם"/>
+			<xsd:enumeration value="כן"/>
+			<xsd:enumeration value="ם"/>
+			<xsd:enumeration value="ן"/>
+			<xsd:enumeration value="יך"/>
+			<xsd:enumeration value="יו"/>
+			<xsd:enumeration value="יה"/>
+			<xsd:enumeration value="ינו"/>
+			<xsd:enumeration value="יכם"/>
+			<xsd:enumeration value="יכן"/>
+			<xsd:enumeration value="יהם"/>
+			<xsd:enumeration value="יהן"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SuffixTransliteratedSurfaceType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="i"/>
+			<xsd:enumeration value="k"/>
+			<xsd:enumeration value="w"/>
+			<xsd:enumeration value="h"/>
+			<xsd:enumeration value="nw"/>
+			<xsd:enumeration value="km"/>
+			<xsd:enumeration value="kn"/>
+			<xsd:enumeration value="m"/>
+			<xsd:enumeration value="n"/>
+			<xsd:enumeration value="ik"/>
+			<xsd:enumeration value="iw"/>
+			<xsd:enumeration value="ih"/>
+			<xsd:enumeration value="inw"/>
+			<xsd:enumeration value="ikm"/>
+			<xsd:enumeration value="ikn"/>
+			<xsd:enumeration value="ihm"/>
+			<xsd:enumeration value="ihn"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- הקטגוריה אינה ידועה     -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="SuffixFunctionType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="possessive"/>
+			<xsd:enumeration value="accusative"/>
+			<xsd:enumeration value="nominative"/>
+			<xsd:enumeration value="accusative or nominative"/>
+			<xsd:enumeration value="pronomial"/>
+			<xsd:enumeration value="unspecified"/>
+			<!-- כינוי קניין חבור    -->
+			<!-- כינוי מושא חבור     -->
+			<!-- כינוי נושא חבור     -->
+			<!--כינוי מושא חבור או כינוי נושא חבור    -->
+			<!-- נטיית גוף/מין/מספר חבורה -->
+			<!-- הקטגוריה אינה ידועה -->
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="NumeralType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="masculine"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="singular"/>
+		<xsd:attribute name="type" type="NumeralTypeType" use="optional" default="unspecified"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="status" type="StatusType" default="unspecified"/>
+		<xsd:attribute name="value" type="xsd:token" use="optional"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- סוג-->
+		<!-- ה הידיעה -->
+		<!-- נסמך-->
+		<!-- ערך עבור גימטריא-->
+		<!-- כתיב -->
+	</xsd:complexType>
+	<xsd:complexType name="CopulaType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="polarity" type="PolarityType" use="optional" default="unspecified"/>
+		<xsd:attribute name="tense" type="TenseType" use="optional" default="unspecified"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- גוף -->
+		<!-- קוטביות -->
+		<!--זמן -->
+		<!-- כתיב -->
+	</xsd:complexType>
+	<xsd:complexType name="ExistentialType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="root" type="xsd:token" use="optional" default=""/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="tense" type="ExistentialTense" use="optional" default="unspecified"/>
+		<xsd:attribute name="interrogative" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="polarity" type="PolarityType" use="optional" default="unspecified"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- כמת ישיי -->
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- שורש -->
+		<!-- גוף -->
+		<!--זמן -->
+		<!-- ה השאלה-->
+		<!--קוטביות - חיובית/שלילית -->
+		<!-- כתיב -->
+	</xsd:complexType>
+	<xsd:simpleType name="ParticiplePosType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="noun"/>
+			<xsd:enumeration value="adjective"/>
+			<xsd:enumeration value="verb"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="PolarityType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="positive"/>
+			<xsd:enumeration value="negative"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+		<!-- קוטביות  -->
+	</xsd:simpleType>
+	<xsd:simpleType name="ExistentialTense">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="past"/>
+			<xsd:enumeration value="future"/>
+      <xsd:enumeration value="present"/>
+			<xsd:enumeration value="infinitive"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="QuantifierType">
+		<xsd:annotation>
+			<xsd:documentation xml:lang="he">
+מבנה זה מגדיר כמתים מספריים ושמות מספר. התכונות הן ע"פ Glinert "The grammar of Modern Hebrew".
+הצורה הבסיסית בשמות מספר היא דווקא צורת נקבה. אולם, מטעמי נוחות נפרט את שמות המספר.
+וכן ישנם מספרים המיוצגים בספרות ובגימטריא.
+
+באופן כללי כל כמת נראה אותו הדבר בנפרד ובנסמך, אולם ישנם מספר יוצאי דופן.
+
+אין התייחסות ליחיד מול רבים שכן רק אחד/אחת ביחיד וכל השאר מייצגים ריבוי כזה או אחר או שלתכונת הריבוי אין משמעות.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="type" type="QuantifierTypeType" use="optional" default="unspecified"/>
+		<xsd:attribute name="status" type="StatusType" default="absolute and construct"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר -->
+		<!-- גוף  -->
+		<!-- סמיכות -->
+		<!-- ה הידיעה -->
+		<!--כתיב -->
+	</xsd:complexType>
+	<xsd:simpleType name="QuantifierTypeType">
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="amount"/>
+			<xsd:enumeration value="partitive"/>
+			<xsd:enumeration value="determiner"/>
+			<xsd:enumeration value="unspecified"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="ModalType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="person" type="PersonType" use="optional" default="unspecified"/>
+		<xsd:attribute name="tense" type="TenseType" use="optional" default="unspecified"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="subcoordinating" type="xsd:token" use="optional" default="false"/>
+		<!-- מין  -->
+		<!-- מספר               -->
+		<!-- גוף    -->
+		<!-- זמן   -->
+		<!-- כתיב               -->
+	</xsd:complexType>
+	<xsd:complexType name="TitleType">
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="expansion" type="xsd:token" use="optional"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<!-- מין  -->
+		<!-- מספר   -->
+		<!-- ה הידיעה   -->
+		<!-- כתיב               -->
+	</xsd:complexType>
+	<xsd:complexType name="MWEType">
+		<xsd:attribute name="id" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="pos" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="consecutive" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="type" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="multiWord" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="multiWordTransliterated" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="multiWordUndotted" type="xsd:token" use="optional" default="unspecified"/>
+		<xsd:attribute name="gender" type="GenderType" use="optional" default="unspecified"/>
+		<xsd:attribute name="number" type="NumberType" use="optional" default="unspecified"/>
+		<xsd:attribute name="definiteness" type="DefinitenessType" default="false"/>
+		<xsd:attribute name="register" type="RegisterType" default="formal"/>
+		<xsd:attribute name="spelling" type="SpellingType" default="standard"/>
+		<xsd:attribute name="multiWordPrefixExist" type="xsd:boolean" use="optional" default="false"/>
+	</xsd:complexType>
+</xsd:schema>
