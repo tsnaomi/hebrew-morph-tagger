@@ -56,5 +56,5 @@ The data in this project draws from a subset of the Israeli [HaAretz](http://www
 
 
 
-### Up next: Check out `readme.ipynb` :)
+### Up next: Check out [`readme.ipynb`](https://github.com/tsnaomi/hebrew-morph-tagger/blob/master/readme.ipynb) :)
 
