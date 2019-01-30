@@ -38,17 +38,17 @@ Similarly, the character embedding input vector enters the network via a charact
 
 The output of the character embedding layer is passed to a character-level bidirectional LSTM layer (`keras.layers.bidirectional` + `keras.layers.LSTM`) that is once again wrapped in a `TimeDistributed` layer to process the characters one word at a time. The output of this layer is then concatenated with the output of the word embedding layer to create a "full embedding". This concatenation is nicely depicted in a figure from [Lample et al. (2016)](https://www.aclweb.org/anthology/N16-1030), shown below. Afterwards, the full embedding is passed through another bidirectional LSTM.
 
-<img src="./images/Lample-figure.png" alt="Lample (2016) figure" style="width: 400px;">
+<p align="center"><img src="./images/Lample-figure.png" alt="Lample (2016) figure" width="400px;"></center></p>
 
 The final layer of the network is a time-distributed `keras.layers.Dense` layer. For each word in the input sentence, it outputs the 38-dimensional vector that encodes the various morphological properties. 
 
 Since the labels in the output vector are *not* mutually exclusive, it is less appropriate to use *softmax* in the final layer, as *softmax* pits labels against one another for probability mass. Instead, I use the *sigmoid* activation function, which computes a value for each cell in the output vector independently of all the other cells in the vector:
 
-<img src="./images/sigmoid-activation.png" alt="sigmoid activation function" style="width: 300px;">
+<p align="center"><img src="./images/sigmoid-activation.png" alt="sigmoid activation function" width="340px;"></p>
 
 Likewise, during training, the model uses *binary cross entropy* as its loss function to prevent the assignment of one label from influencing the assignment of other labels. *Binary cross entropy* assumes each label has a binary distribution {*p*, 1-*p*}; therefore, it calculates the error for each label independently of the next, then sums over the results. Below, *y<sub>i</sub>* is the correct value for label *i* and *y<sub>i</sub>*-hat is the predicted value for that label.
 
-<img src="./images/binary-cross-entropy.png" alt="binary cross entropy loss function" style="width: 320px;">
+<p align="center"><img src="./images/binary-cross-entropy.png" alt="binary cross entropy loss function" width="360px;"></p>
 
 ### The data
 
